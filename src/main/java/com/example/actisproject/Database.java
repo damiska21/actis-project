@@ -6,6 +6,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.sql.*;
 
 public class Database {
+    /* default připojení k db
+    String url = "jdbc:postgresql://localhost:5432/";
+        String username = "postgres";
+        String password = "12345";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password); Statement statement = connection.createStatement()) {
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     */
+    public static String personProps = "(name ,surname ,age ,birthday, gender)";
     public static void CreateDatabase() {
         String url = "jdbc:postgresql://localhost:5432/";
         String username = "postgres";
@@ -13,24 +25,47 @@ public class Database {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
+            statement.executeUpdate("CREATE DATABASE testdb;");
+            //System.out.println("Databáze úspěšně vytvořena. Tvorba tablu: ");
             String sql = "DROP DATABASE testdb;";
             statement.executeUpdate(sql);
-            sql = "CREATE DATABASE testdb;";
-            statement.executeUpdate(sql);
-            System.out.println("Databáze úspěšně vytvořena. Tvorba tablu: ");
-            String personProps = "(name ,surname ,age ,birthday)";
+            statement.executeUpdate("CREATE TABLE person (name VARCHAR(30),surname VARCHAR(30),age INT,birthday DATE, gender BOOLEAN);"); //muž je pravda, žena je nepravda
+            //System.out.println("Table úspěšně vytvořen. Vložení hodnot:");
+            statement.execute("INSERT INTO person " + personProps + " VALUES ('Jiri', 'Boruvka', 24, '2000-02-27', true);");
+            statement.execute("INSERT INTO person " + personProps + " VALUES ('Martin', 'Zeleny', 31, '1992-09-11', true);");
+            //System.out.println("Lidé úspěšně přidáni do databáze.");
+            System.out.println("Databáze s hodnotami úspěšně vytvořena.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void addPerson(String name, String surname, Integer age, Date birthday, Boolean gender){
+        String url = "jdbc:postgresql://localhost:5432/";
+        String username = "postgres";
+        String password = "12345";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password); Statement statement = connection.createStatement()) {
+            String command = "INSERT INTO person " + personProps + " VALUES ('" + name + "', '" + surname + "', '" + age + "', '" + birthday + "', '" + gender + "');";
+            System.out.println("Člověk: " + name + " byl úspěšně přidán do databáze.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void DropDatabase() {
+        String url = "jdbc:postgresql://localhost:5432/";
+        String username = "postgres";
+        String password = "12345";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password); Statement statement = connection.createStatement()) {
             statement.execute("DROP TABLE person");
-            statement.executeUpdate("CREATE TABLE person (name VARCHAR(30),surname VARCHAR(30),age INT,birthday DATE);");
-            System.out.println("Table úspěšně vytvořen. Vložení hodnot:");
-            statement.execute("INSERT INTO person " + personProps + " VALUES ('Jiri', 'Boruvka', 24, '2000-02-27');");
-            statement.execute("INSERT INTO person " + personProps + " VALUES ('Martin', 'Zeleny', 31, '1992-09-11');");
-            System.out.println("Lidé úspěšně přidáni do databáze.");
+            statement.execute("DROP DATABASE testdb;");
+            System.out.println("Databáze úspěšně dropnuta!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static String databaseGet(){
+    public static String get(){ //dá ve stupidním formátu všechny hodnoty
         System.out.println("g");
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "12345"); Statement statement = connection.createStatement()) {
             String command = "SELECT * FROM person;";
@@ -48,24 +83,10 @@ public class Database {
                 }
             }
             return sb.toString();
-
-            //return String.format("%s",statement.execute(command));
         }catch (SQLException ignored) {
             System.out.println("posrar :3");
             return "bububu";
         }
     }
 
-    /*@GetMapping("/database")
-    public String databasePull(@RequestParam(value = "dbname", defaultValue = "testdb") String dbname) {
-        System.out.println("g");
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "12345"); Statement statement = connection.createStatement()) {
-            String command = "SELECT * FROM person;";
-            System.out.println(statement.execute(command));
-            return String.format("%s",statement.execute(command));
-        }catch (SQLException ignored) {
-            System.out.println("bububu");
-            return "bububu";
-        }
-    }*/
 }

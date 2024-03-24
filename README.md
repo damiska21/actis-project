@@ -10,5 +10,7 @@ datových typů, minimálně — text, číslo, boolean, datum)
 7. Sepsat stručný návod a dokumentaci
 
 Nepovinné požadavky:
-8. Rozšířit API - načítání konkrétních záznamů, vkládání záznamů,…
+
+8. Rozšířit API - načítání konkrétních záznamů, vkládání záznamů,
+
 9. Frontend - Angular JS
