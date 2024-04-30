@@ -1,16 +1,37 @@
+NASTAVENÍ DATABÁZE (tohle vůbec netušim jak funguje ale nějak jsem to nastavil)
+
+postgresql://localhost:5432
+
+už. jméno - postgres
+
+heslo - 12345
+
+
 ZÁZNAM ČLOVĚKA
+
 name - jméno - string (limit 30 charů)
+
 surname - příjmení - string (limit 30 charů)
+
 age - věk - int
+
 birthday - datum narození - date (yyyy-mm-dd)
+
 gender - pohlaví - bool (true je muž, false žena, zbytek má smůlu :D)
 
+
 STRÁNKY
+
 /database - vypisuje všechny záznamy v databázi lidí
+
 /database/add - přidává člověka
+
     příklad použití - /database/add?name=Jan&&surname=Zeleny&age=26&birthday=1998-18-12&gender=true
+    
 /api/test/{jakékoliv číslo} - test funkčnosti webu
+
 /   - jednoduchý úvod
+
 /error - by měl být error stránka, fungoval, ale teď záhadně ne.
 
 
