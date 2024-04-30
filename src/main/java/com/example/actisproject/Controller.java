@@ -15,7 +15,7 @@ public class Controller {
         return "string :3  tvý číslo: " + resourceId;
     }
     @GetMapping("/error")
-    public String errorik() {
+    public String error() {
         return String.format("Něco jsem sprasil D:");
     }
     @GetMapping("/database")
@@ -24,7 +24,11 @@ public class Controller {
     }
     @GetMapping("/database/add")
     public String add(@RequestParam(value = "name", defaultValue = ";")String name, @RequestParam(value = "surname", defaultValue = ";")String surname, @RequestParam(value = "age", defaultValue = "-1")Integer age, @RequestParam(value = "date", defaultValue = "2000-01-01") java.sql.Date birthday, @RequestParam(value = "gender", defaultValue = "true")Boolean gender){
-        Database.addPerson(name, surname, age, birthday, gender);
-        return String.format("uživatel byl přidán");
+
+        return String.format(Database.addPerson(name, surname, age, birthday, gender));
+    }
+    @GetMapping("")
+    public String uvod(){
+        return String.format("Zdravím na webu! Vše důležité je v dokumentaci");
     }
 }

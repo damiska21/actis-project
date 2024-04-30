@@ -1,9 +1,9 @@
 package com.example.actisproject;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Objects;
 
 public class Database {
     /* default připojení k db
@@ -23,12 +23,9 @@ public class Database {
         String username = "postgres";
         String password = "12345";
 
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             Statement statement = connection.createStatement()) {
+        try (Connection connection = DriverManager.getConnection(url, username, password); Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE DATABASE testdb;");
             //System.out.println("Databáze úspěšně vytvořena. Tvorba tablu: ");
-            String sql = "DROP DATABASE testdb;";
-            statement.executeUpdate(sql);
             statement.executeUpdate("CREATE TABLE person (name VARCHAR(30),surname VARCHAR(30),age INT,birthday DATE, gender BOOLEAN);"); //muž je pravda, žena je nepravda
             //System.out.println("Table úspěšně vytvořen. Vložení hodnot:");
             statement.execute("INSERT INTO person " + personProps + " VALUES ('Jiri', 'Boruvka', 24, '2000-02-27', true);");
@@ -39,17 +36,22 @@ public class Database {
             e.printStackTrace();
         }
     }
-    public static void addPerson(String name, String surname, Integer age, Date birthday, Boolean gender){
+    public static String addPerson(String name, String surname, Integer age, Date birthday, Boolean gender){
         String url = "jdbc:postgresql://localhost:5432/";
         String username = "postgres";
         String password = "12345";
+        if(Objects.equals(name, ";") || Objects.equals(surname, ";")){ //takhle se evidentně porovnávají v javě hodnoty idk
+            return "uživatel nebyl přidán, nebylo specifikováno jméno";
+        }
 
         try (Connection connection = DriverManager.getConnection(url, username, password); Statement statement = connection.createStatement()) {
-            String command = "INSERT INTO person " + personProps + " VALUES ('" + name + "', '" + surname + "', '" + age + "', '" + birthday + "', '" + gender + "');";
+            String command = "INSERT INTO person " + personProps + " VALUES ('" + name + "', '" + surname + "', '" +age+"', '" + birthday + "', '" + gender + "');";
+            statement.execute(command);
             System.out.println("Člověk: " + name + " byl úspěšně přidán do databáze.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return "Člověk: " + name + " byl úspěšně přidán do databáze.";
     }
     public static void DropDatabase() {
         String url = "jdbc:postgresql://localhost:5432/";
@@ -77,14 +79,14 @@ public class Database {
             int columns = rs.getMetaData().getColumnCount();
             while (rs.next()) {
                 int row = rs.getRow();//přidává na začátek řádku číslo samotného řádku
-                sb.append(rs.getRow()).append(";");
+                sb.append(" --- ").append(rs.getRow());
                 for (int i = 1 ; i <= columns ; i++) {
                     sb.append(rs.getObject(i)).append('|');
                 }
             }
             return sb.toString();
         }catch (SQLException ignored) {
-            System.out.println("posrar :3");
+            System.out.println("něco se pokazilo :3");
             return "bububu";
         }
     }
